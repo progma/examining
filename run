@@ -1,0 +1,1 @@
+coffee --compile --watch --lint --output js/ coffee/
