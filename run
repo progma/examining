@@ -1,1 +1,2 @@
+mkdir -p js
 coffee --compile --watch --lint --output js/ coffee/

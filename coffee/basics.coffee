@@ -6,5 +6,13 @@ root.console =
   assert: (bool) ->
     aCount++
     document.write "~> #{aCount}. assert failed!\n" unless bool
+  dump: (obj, depth = 0, index = "DUMP") ->
+    indent = ""
+    indent += "  " for i in [1..depth] by 1
+    console.log "#{indent}#{index}: #{obj}"
 
-root.exports = {}
+    for i of obj
+      if obj[i] instanceof Object
+        console.dump obj[i], depth + 1, i
+      else
+        console.log "#{indent}  #{i}: #{obj[i]}"
