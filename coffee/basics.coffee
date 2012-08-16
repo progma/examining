@@ -9,7 +9,7 @@ root.console =
   dump: (obj, depth = 0, index = "DUMP") ->
     indent = ""
     indent += "  " for i in [1..depth] by 1
-    console.log "#{indent}#{index}: #{obj}"
+    console.log "#{indent}#{index}: #{obj} (type: #{typeof obj})"
 
     for i of obj
       if obj[i] instanceof Object

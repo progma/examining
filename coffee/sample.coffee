@@ -1,9 +1,12 @@
 root = exports ? this # hack abych zatim nemusel pouzivat zadny modulovac
 qc = root.quickCheck
 
-# console.log qc.arbArray((x) -> qc.arbSizedInt 40*x)(20)
+##
+## Examples of using helper functions to create custom generator
+##
 # console.log qc.frequency([[1,qc.arbSizedDouble], [3,qc.arbSizedInt], [4,qc.arbBool]])(500)
 # console.log qc.oneOf([qc.arbSizedDouble, qc.arbSizedInt, qc.arbBool])(300)
+# console.log qc.elements([101,220,300])(100)
 
 ##
 ## Incorrect QuickSort example
@@ -52,6 +55,7 @@ testF = (testResult) -> console.assert 'values' of testResult # is fail report
 testG = (testResult) -> console.assert testResult == false    # gave up
 
 try
+  # Test basic functions
   testT qc.run ((x,y) -> x != y), qc.arbBool, qc.arbInt
   testT qc.run ((x) -> typeof (x) == "number"), qc.arbInt
   testT qc.run ((x,y) -> x*y == y*x), qc.arbByte, qc.arbByte
@@ -61,6 +65,24 @@ try
 
   testT qc.run ((size) -> qc.arbArrayOf(size,qc.arbBool)().length == size),
     ((size) -> size*size)
+
+  # Test shrinking
+  customGen = qc.makeShrinking
+    create: (size) -> ("|" for i in [1..size] by 1).join ""
+    shrink: (arr) -> if arr.length > 0 then [arr.slice 1] else []
+
+  T = (x,y) -> {gen: x, res: y}
+  sTests = [
+    T qc.arbArrayOf(5, customGen), (len,size) -> if size > 0 then 5 else 0
+    T qc.arbArray(customGen), (len) -> len*2
+    T customGen, (len) -> if len > 0 then 1 else 0
+  ]
+
+  for t in sTests
+    testT qc.run (size) ->
+      generated = t.gen size
+      (t.gen.shrink generated).length == t.res generated.length, size
+    , qc.arbByte
 catch err
   console.log err.message.toString()
 finally
@@ -73,3 +95,5 @@ finally
 # - check existence funkci --> viz Strict mode and/or try/catch/finally
 # - pocesteni
 # - zbytek komentaru
+
+# Diskuze nad pouzivanim [0..length-1], vs [0...length] a pouzivani "by 1"
