@@ -1,4 +1,3 @@
-# TODO explain generators, shrinking and run procedure
 
 
 ##
@@ -55,13 +54,13 @@ arbChar = ->
 # another generator (given as second parameter)
 arbArrayOf = (length,generator) -> makeShrinking
   create: (size) ->
-    generator(size) for i in [0..length-1] by 1
+    generator(size) for i in [0...length]
 
   shrink: (arr) ->
     return [] if not canShrink generator
     res = []
 
-    for i in [0..arr.length-1] by 1
+    for i in [0...arr.length]
       for g in generator.shrink arr[i]
         arr1 = arr.slice 0
         arr1.splice i, 1, g
@@ -76,7 +75,7 @@ arbArrayPrim = (generator,minimum) -> makeShrinking
   shrink: (arr) ->
     return [] if arr.length < minimum
 
-    res = for i in [0..arr.length-1] by 1
+    res = for i in [0...arr.length]
       arr1 = arr.slice 0
       arr1.splice i, 1
       arr1
@@ -123,14 +122,12 @@ oneOf = (arr) -> (size) ->
   l = arr.length
   i = choosePrimInt 0, l-1
   arr[i](size)
-  # TODO shorter?
-  # elements(arr)()(size)
 
 # Creates generator selecting uniformly from given array
 # :: [a] -> Gen a
 elements = (arr) -> ->
   l = arr.length
-  i = Math.round (choosePrim 0, l-1)
+  i = choosePrimInt  0, l-1
   arr[i]
 
 # Creates generator selecting with a weighted random distribution from given
