@@ -59,6 +59,10 @@ Tn = (args, name = "") -> args: args, expected: undefined, name: name
 # - use just property with QuickCheck and/or testCases (expecting true/false)
 # - use just testedFunction with testCases and expected result always set
 #
+# Note:
+# - runs QuickCheck with environment defined by environment property and
+#   ignores quickCheckArgs.user
+#
 # Returns just true if test succeeded or object with fail informations
 
 test = (settings) ->
@@ -66,8 +70,9 @@ test = (settings) ->
 
   try
     if 'code' of settings
-      # Users code is sandboxed inside a iframe
+      # Users code is sandboxed inside a hidden iframe
       sandboxFrame = $ '<iframe/>', id: sandboxID
+      sandboxFrame.css "display", "none"
       $('body').append sandboxFrame
       user = sandboxFrame.get(0).contentWindow
 
@@ -78,11 +83,13 @@ test = (settings) ->
       user.eval settings.code
 
     if 'quickCheck' of settings
-      settings.quickCheckArgs = settings.quickCheckArgs ? qc.stdArgs
-      settings.quickCheckArgs.user = user
+      qcArgs = settings.quickCheckArgs ? qc.stdArgs
+      qcArgs.user = user
 
       resObj.qcRes =
-        qc.runWith settings.quickCheckArgs, settings.property, settings.quickCheck...
+        qc.runWith qcArgs
+                 , settings.property
+                 , settings.quickCheck...
 
       if resObj.qcRes == true           && settings.quickCheckExpected == false ||
          resObj.qcRes instanceof Object && settings.quickCheckExpected != false
