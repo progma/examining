@@ -201,6 +201,7 @@ stdArgs =
   chatty      : false # whether to print anything
   shrinkNum   :    -1 # try shrinking of counterexample in order to find
                       # a smaller one (-1 allows infinite shrink attempts)
+  user : undefined    # environment accessible for tested property via @user
 
 # Run tests of given property.
 # Returns either true or array of failing values.
@@ -212,7 +213,10 @@ runWith = (args, property) ->
   while n < args.maxSuccess && d < args.maxDiscards
     size   = computeSize args, n, d
     values = generators.map (f) -> f size
-    logObj = {failReason: "", size: size}
+    logObj =
+      failReason: ""
+      size: size
+      user: args.user  # export user environment
 
     switch property.apply logObj, values
       # Test succeeded
