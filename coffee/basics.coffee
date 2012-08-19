@@ -5,7 +5,9 @@ root.console =
   log: (msg) -> document.write msg + '\n'
   assert: (bool) ->
     aCount++
-    document.write "~> #{aCount}. assert failed!\n" unless bool
+    unless bool == true
+      console.log "~> #{aCount}. assert failed!"
+      console.dump bool
   dump: (obj, depth = 0, index = "DUMP") ->
     indent = ""
     indent += "  " for i in [1..depth] by 1

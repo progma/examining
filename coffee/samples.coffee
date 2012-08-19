@@ -106,9 +106,7 @@ catch err
 try
   # Helper:
   check = (testObject) ->
-    result = ex.test testObject
-    console.assert result == true
-    console.dump result if result != true
+    console.assert ex.test testObject
 
   # Examples:
   check
@@ -137,6 +135,25 @@ try
       T [{a: 1}, 'a', 1]
       T [{}, 'b', undefined]
     ]
+
+  # Testing user code
+  check
+    name: "User code"
+    code: "function f(a) {return a*2};"
+    property: (x) -> @user.f x == x*2
+    quickCheck: [qc.arbInt]
+
+  check
+    name: "User code with environment"
+    code: """
+      function f(x) {
+        return 2*g(x);
+      }
+      """
+    environment:
+      g: (x) -> 2*x
+    property: (x) -> 2*2*x == @user.f x
+    quickCheck: [qc.arbInt]
 
   # Failing tests:
   check
