@@ -14,17 +14,31 @@ deepeq = (a, b) ->
   return false if Object.keys(a).length != Object.keys(b).length
 
   for own prop of a
-    if a[prop] instanceof Object && b[prop] instanceof Object
-      return false unless deepeq a[prop], b[prop]
-    else
-      return false unless a[prop] == b[prop]
+    return false unless deepeq a[prop], b[prop]
 
   true
 
-T = (args, res = undefined, name = "") -> args: args, expected: res, name: name
-Tn = (args, name = "") -> args: args, expected: undefined, name: name
-
+# Create test case
 #
+# Arguments:
+# - array of arguments for tested function/property
+# - expected result    (optional, default true)
+# - name of test case  (optional, default "")
+T = (args, res = true, name = "") ->
+  args: args
+  expected: res
+  name: name
+
+# Create named test case
+#
+# Arguments:
+# - array of arguments for tested function/property
+# - name of test case  (optional, default "")
+#
+# Expected result is set to true.
+Tn = (args, name = "") ->
+  T args, undefined, name
+
 # Testing function, example of usage:
 #
 # examine.test {
@@ -46,12 +60,14 @@ Tn = (args, name = "") -> args: args, expected: undefined, name: name
 #
 #   testedFunction: someFunction      # if ommited use @property
 #   testCases: [
-#     T [1,2,3]      # args
-#       6            # expected result
-#       "Small ..."  # test case name (default "")
+#     T  [1,2,3]      # args
+#      , 6            # expected result
+#      , "Small ..."  # test case name (default "")
 #
 #     Tn [3,2,1]     # args
-#        "Reversed"  # test case name (default "")
+#      , "Reversed"  # test case name (default "")
+#
+#     T [0,0,0], 0, "Zero case"
 #     T or Tn ...
 #   ]
 # }
@@ -60,10 +76,10 @@ Tn = (args, name = "") -> args: args, expected: undefined, name: name
 # - use just testedFunction with testCases and expected result always set
 #
 # Note:
-# - runs QuickCheck with environment defined by environment property and
-#   ignores quickCheckArgs.user
+# - if environment is set QuickCheck runs with variables defined by environment
+#   property and ignores quickCheckArgs.user
 #
-# Returns just true if test succeeded or object with fail informations
+# Returns just true if test succeeded or object containing fail informations
 
 test = (settings) ->
   resObj = testName: settings.name
@@ -84,26 +100,29 @@ test = (settings) ->
 
     if 'quickCheck' of settings
       qcArgs = settings.quickCheckArgs ? qc.stdArgs
-      qcArgs.user = user
+      qcArgs.user = user  # export environment for QuickCheck
 
       resObj.qcRes =
         qc.runWith qcArgs
                  , settings.property
                  , settings.quickCheck...
 
+      # Fail if succeeded and is supposed to fail or converse
       if resObj.qcRes == true           && settings.quickCheckExpected == false ||
          resObj.qcRes instanceof Object && settings.quickCheckExpected != false
         resObj.quickCheckFailed = true
         return resObj
 
     if 'testCases' of settings
-
       for tc in settings.testCases
+        # Set user environment so that all inner functions/variables are
+        # accessible in testedFunction or tested property via @user
         logObj = user: user
 
         res = (settings.testedFunction ? settings.property).apply logObj, tc.args
 
-        if not deepeq res, tc.expected ? true
+        # Fail if result is different to expected result
+        if not deepeq res, tc.expected
           resObj.testsRes  = false
           resObj.testRes   = res
           resObj.epected   = tc.expected
