@@ -164,7 +164,7 @@ czechErrorName = (err) ->
 
 setEnvironment = (to, from) ->
   for i of from
-    to[i] = ->
+    to[i] = do (i) -> ->
       throw Error 'Code stopped from outside.' if to.__STOP == true
       from[i] arguments...
 
