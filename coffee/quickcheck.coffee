@@ -252,28 +252,29 @@ run = (property) ->
 ##
 ## Exports
 ##
-(exports ? this).quickCheck =
+(exports ? this).quickCheck = {
   # Arbitrary object generators
-  arbBool       : arbBool
-  arbByte       : arbByte
-  arbDouble     : arbDouble
-  arbSizedDouble: arbSizedDouble
-  arbInt        : arbInt
-  arbSizedInt   : arbSizedInt
-  arbChar       : arbChar
-  arbArray      : arbArray
-  arbArray1     : arbArray1
-  arbArrayOf    : arbArrayOf
-  arbString     : arbString
-  arbChoose     : arbChoose
+  arbBool
+  arbByte
+  arbDouble
+  arbSizedDouble
+  arbInt
+  arbSizedInt
+  arbChar
+  arbArray
+  arbArray1
+  arbArrayOf
+  arbString
+  arbChoose
 
   # Helpers for creating custom generators
-  makeShrinking : makeShrinking
-  oneOf         : oneOf
-  elements      : elements
-  frequency     : frequency
+  makeShrinking
+  oneOf
+  elements
+  frequency
 
   # Testing factory
-  run           : run
-  runWith       : runWith
-  stdArgs       : stdArgs
+  run
+  runWith
+  stdArgs
+}

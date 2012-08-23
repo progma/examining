@@ -5,8 +5,7 @@ root = exports ? this # hack abych zatim nemusel pouzivat zadny modulovac
 qc = root.quickCheck
 ex = root.examine
 
-T = ex.T
-Tn = ex.Tn
+{T, Tn} = ex
 
 
 ##
@@ -177,9 +176,5 @@ finally
 
 
 # TODO
-# - piskoviste
 # - syntax check
-# - check existence funkci --> viz Strict mode and/or try/catch/finally
-# - zbytek komentaru
-
-# Diskuze nad pouzivanim [0..length-1], vs [0...length] a pouzivani "by 1"
+# - comments

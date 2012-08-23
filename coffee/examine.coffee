@@ -179,10 +179,11 @@ stopExecution = (iframeID = sandboxID) ->
 ##
 ## Exports
 ##
-(exports ? this).examine =
-  deepeq: deepeq
-  T: T
-  Tn: Tn
-  test: test
-  sandboxID: sandboxID
-  stopExecution: stopExecution
+(exports ? this).examine = {
+  deepeq
+  T
+  Tn
+  test
+  sandboxID
+  stopExecution
+}
