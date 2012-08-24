@@ -205,8 +205,7 @@ stdArgs =
 
 # Run tests of given property.
 # Returns either true or array of failing values.
-runWith = (args, property) ->
-  generators = Array::slice.call(arguments, 2)
+runWith = (args, property, generators...) ->
 
   n = 0  # number of successfully ran tests
   d = 0  # number of discarded tests

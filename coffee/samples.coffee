@@ -154,6 +154,23 @@ try
     property: (x) -> 2*2*x == @user.f x
     quickCheck: [qc.arbInt]
 
+  check
+    name: "User code with constants"
+    code: """
+      function f() {
+        g *= 2;
+        return g;
+      }
+      """
+    constants:
+      g: 1
+    testedFunction: -> @user.f()
+    testCases: [
+      T [], 2
+      T [], 4
+      T [], 8
+    ]
+
   # Failing tests:
   check
     name: "Missing variable (should fail)"
