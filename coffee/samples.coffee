@@ -1,9 +1,8 @@
 ##
 ## Imports
 ##
-root = exports ? this # hack abych zatim nemusel pouzivat zadny modulovac
-qc = root.quickCheck
-ex = root.examine
+qc = @quickCheck ? require './quickcheck'
+ex = @examine    ? require './examine'
 
 {T, Tn} = ex
 
@@ -94,7 +93,8 @@ propWQS = (arr) ->
   # simple test, not controlling elements of newArr
 
 try
-  # console.dump qc.run propWQS, qc.arbArray qc.arbByte
+  # When you test it, you get an error
+  # console.dir qc.run propWQS, qc.arbArray qc.arbByte
 catch err
   console.log err.message.toString()
 

@@ -1,5 +1,3 @@
-
-
 ##
 ## Helpers
 ##
@@ -206,9 +204,9 @@ stdArgs =
 # Run tests of given property.
 # Returns either true or array of failing values.
 runWith = (args, property, generators...) ->
-
   n = 0  # number of successfully ran tests
   d = 0  # number of discarded tests
+
   while n < args.maxSuccess && d < args.maxDiscards
     size   = computeSize args, n, d
     values = generators.map (f) -> f size
@@ -251,7 +249,7 @@ run = (property) ->
 ##
 ## Exports
 ##
-(exports ? this).quickCheck = {
+@quickCheck = {
   # Arbitrary object generators
   arbBool
   arbByte
@@ -277,3 +275,4 @@ run = (property) ->
   runWith
   stdArgs
 }
+module?.exports = @quickCheck
