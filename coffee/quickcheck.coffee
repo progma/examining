@@ -102,9 +102,13 @@ choosePrim = (l, u) ->
 choosePrimInt = (l, u) ->
   Math.round (choosePrim l, u)
 
-# Create generator of random real number between #{l} and #{u}
+# Create generator of random real between #{l} and #{u}
 arbChoose = (l, u) -> ->
   choosePrim l, u
+
+# Create generator of random integer between #{l} and #{u}
+arbChooseInt = (l, u) -> ->
+  choosePrimInt l, u
 
 ##
 ## Helpers for creating custom generators
@@ -225,7 +229,7 @@ runWith = (args, property, generators...) ->
 
         # Fail report
         return {
-          values: localMin property, generators, args.shrinkNum, values
+          args: localMin property, generators, args.shrinkNum, values
           logObj: logObj
         }
 
@@ -263,6 +267,7 @@ run = (property) ->
   arbArrayOf
   arbString
   arbChoose
+  arbChooseInt
 
   # Helpers for creating custom generators
   makeShrinking
